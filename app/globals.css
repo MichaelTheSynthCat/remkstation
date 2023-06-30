@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-    .my_hover_anim {
-        @apply transition-colors ease-linear hover:text-highlight
-    }
+.my_text_anim {
+    @apply transition-colors ease-linear hover:text-highlight
+}
+
+.my_button {
+    @apply border-4 my_button_anim;
+}
+
+.my_button_anim {
+    @apply transition-colors ease-linear hover:border-highlight_darker;
+}
