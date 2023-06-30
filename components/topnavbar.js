@@ -13,7 +13,8 @@ function NavButton({children, text, link}) {
 
 export default function TopNavBar() {
     return (
-        <div className="bg-primary p-3 shadow-highlight_darker shadow-md">
+        <div className="bg-primary p-3 shadow-highlight_darker shadow-md
+            sticky top-0">
             <NavButton text="REMKSTATION"/>
             <NavButton text="To Do" link="/todo"/>
         </div>
