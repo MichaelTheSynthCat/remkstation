@@ -25,7 +25,7 @@ function TDEntry({ text, checked, handleCheck, handleRemove }) {
 export default function ToDoList() {
 
     const [totalEntries, setTotalEntries] = useState(0);
-    const [entries, setEntries] = useState([])
+    const [entries, setEntries] = useState(JSON.parse(localStorage.getItem("todolist")));
     const [entryField, setEntryField] = useState('');
     const rows = [];
 
@@ -37,6 +37,7 @@ export default function ToDoList() {
         setTotalEntries(totalEntries + 1);
         setEntries(nextEntries);
         setEntryField("");
+        saveEntries(nextEntries);
     }
 
     function checkEntry(key) {
@@ -47,6 +48,7 @@ export default function ToDoList() {
             }
         });
         setEntries(nextEntries);
+        saveEntries(nextEntries);
     }
 
     function deleteEntry(key) {
@@ -58,6 +60,11 @@ export default function ToDoList() {
             }
         }
         setEntries(nextEntries);
+        saveEntries(nextEntries);
+    }
+
+    function saveEntries(entries_to_save){
+        localStorage.setItem("todolist", JSON.stringify(entries_to_save));
     }
 
     entries.forEach((entry) => {
@@ -72,7 +79,7 @@ export default function ToDoList() {
 
     return (
         <div className="flex flex-col gap-2 p-5 bg-primary border border-white shadow-lg shadow-highlight_darker 
-        min-h-[40rem] justify-start">
+        min-h-[38rem] min-w-[30rem] justify-start">
             <p className="basis-2 text-3xl p-3 text-center">TO DO LIST</p>
             <div className="">
                 <form method="post"
