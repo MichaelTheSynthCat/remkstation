@@ -17,6 +17,7 @@ export default function TopNavBar() {
             sticky top-0">
             <NavButton text="REMKSTATION"/>
             <NavButton text="To Do" link="/todo"/>
+            <NavButton text="Calendar" link="/calendar"/>
         </div>
     );
 }
