@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
         <html lang="en">
             <body className={inter.className + 'bg-secondary'}>
                 <TopNavBar />
-                <div className='text-tcolor grid h-screen place-items-center p-9 bg-secondary'>
+                <div className='text-tcolor grid w-full max-h-full min-h-screen place-items-center p-9 bg-secondary'>
                     {children}
                 </div>
             </body>
