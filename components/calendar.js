@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Dialog, TextField } from "@mui/material";
+import { Button, Dialog, TextField, Tooltip } from "@mui/material";
 import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -39,17 +39,43 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
     const handleSaveChanges = (name, description, date) => {
         handleModify(event.id, name, description, date);
         setOpenDialog(false);
-    }
+    };
 
     return (
-        <div
-            className="flex justify-between hover:bg-blue-500"
-            onClick={() => {
-                if (!openDialog) setOpenDialog(true);
-            }}
-        >
-            <span>{event.name}</span>
-            <span>{new Date(event.date).toTimeString().slice(0, 5)}</span>
+        <>
+            <Tooltip
+                title={
+                    <div>
+                        <div className="text-xl font-bold border-b">{event.name}</div>
+                        <div className="text-base">
+                            <span className="text-lg pr-2">
+                                {new Date(event.date)
+                                    .toTimeString()
+                                    .slice(0, 5)}
+                            </span>
+                            <span className="font-extralight text-gray-300">
+                            {new Date(event.date)
+                                    .toDateString().slice(4)}
+                            </span>
+                        </div>
+                        <div className="border-b text-base">
+                            {event.description}
+                        </div>
+                        <div className="italic text-gray-300">
+                            Click to modify
+                        </div>
+                    </div>
+                }
+            >
+                <div
+                    className="flex justify-between text-lg transition-all hover:bg-blue-500"
+                    onClick={() => {
+                        if (!openDialog) setOpenDialog(true);
+                    }}
+                >
+                    <span className="truncate px-1">{event.name}</span>
+                </div>
+            </Tooltip>
             <EventEditDialog
                 openBool={openDialog}
                 handleCloseDialog={handleCloseDialog}
@@ -60,7 +86,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
                     setOpenDialog(false);
                 }}
             />
-        </div>
+        </>
     );
 }
 
@@ -85,7 +111,9 @@ function CalendarDayEntry({ date, dataRef, handleModify, handleDelete }) {
 
     return (
         <div className="relative border-2 w-full min-h-[8rem] rounded-lg text-xl ">
-            <div className="absolute bottom-0 right-0 p-1 opacity-20">{date.getUTCDate()}</div>
+            <div className="absolute bottom-0 right-0 p-1 opacity-20">
+                {date.getUTCDate()}
+            </div>
             <div className="items-stretch">{renderEvents()}</div>
         </div>
     );
@@ -133,8 +161,12 @@ function CalendarTable({ view_date, dataRef, handleModify, handleDelete }) {
 
 function CalendarAddEvent({ handleOpenDialog }) {
     return (
-        <Button variant="outlined" onClick={() => handleOpenDialog()}>
-            +
+        <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleOpenDialog()}
+        >
+            New event
         </Button>
     );
 }
@@ -144,22 +176,27 @@ function CalendarHeader({ view_date, handleViewChange, handleOpenDialog }) {
         return (
             <span>
                 {main_date.getFullYear().toString() +
-                    "/" +
+                    " / " +
                     main_date.toLocaleString("default", { month: "long" })}
             </span>
         );
     };
 
     return (
-        <div>
-            {actual_month(view_date)}
-            <Button variant="outlined" onClick={() => handleViewChange(-1)}>
-                {"<"}
-            </Button>
-            <Button variant="outlined" onClick={() => handleViewChange(1)}>
-                {">"}
-            </Button>
-            <CalendarAddEvent handleOpenDialog={handleOpenDialog} />
+        <div className="pb-5 flex justify-between">
+            <span className="text-4xl">{actual_month(view_date)}</span>
+            <div className="space-x-5">
+                <Button
+                    variant="contained"
+                    onClick={() => handleViewChange(-1)}
+                >
+                    {"<"}
+                </Button>
+                <Button variant="contained" onClick={() => handleViewChange(1)}>
+                    {">"}
+                </Button>
+                <CalendarAddEvent handleOpenDialog={handleOpenDialog} />
+            </div>
         </div>
     );
 }
@@ -189,13 +226,11 @@ function EventEditDialog({
 
     return (
         <Dialog open={openBool}>
-            <div
-                className="m-4"
-            >
-                <div className="text-3xl">{modifiedEvent ? "Edit event" : "New event"}</div>
-                <div
-                    className="grid grid-cols-1 gap-6"
-                >
+            <div className="m-4">
+                <div className="text-3xl pb-3">
+                    {modifiedEvent ? "Edit event" : "New event"}
+                </div>
+                <div className="grid grid-cols-1 gap-6">
                     <TextField
                         className=""
                         id="name"
@@ -233,16 +268,29 @@ function EventEditDialog({
                         </LocalizationProvider>
                     </div>
                 </div>
-                <div>
-                    <Button variant="outlined" onClick={() => handleCloseDialog()}>
+                <div className="flex justify-between pt-4">
+                    <Button
+                        variant="contained"
+                        onClick={() => handleCloseDialog()}
+                    >
                         Cancel
                     </Button>
-                    {modifiedEvent ? (<Button variant="outlined" onClick={handleDelete}>Delete</Button>) : null}
+                    {modifiedEvent ? (
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </Button>
+                    ) : null}
                     <Button
-                        variant="outlined"
+                        variant="contained"
                         onClick={() => {
-                            handleSaveChanges(name, description, date);
-                            resetDialog();
+                            if(name.length != 0 ) {
+                                handleSaveChanges(name, description, date);
+                                resetDialog();
+                            }
                         }}
                     >
                         {modifiedEvent ? "Save changes" : "Add new event"}
@@ -290,10 +338,7 @@ export default function Calendar() {
             }
         }
         setCalendatData(nextCalendarData);
-        localStorage.setItem(
-            "calendar",
-            JSON.stringify(nextCalendarData)
-        );
+        localStorage.setItem("calendar", JSON.stringify(nextCalendarData));
     }
 
     function deleteEvent(eventID) {
@@ -305,10 +350,7 @@ export default function Calendar() {
             }
         }
         setCalendatData(nextCalendarData);
-        localStorage.setItem(
-            "calendar",
-            JSON.stringify(nextCalendarData)
-        );
+        localStorage.setItem("calendar", JSON.stringify(nextCalendarData));
     }
 
     const handleOpenAddDialog = () => {
@@ -335,7 +377,7 @@ export default function Calendar() {
     };
 
     const handleModify = (oldEventID, name, description, date) => {
-        console.log(date)
+        console.log(date);
         var name_str = name;
         var description_str = description;
         var dateJS = date.toDate();
