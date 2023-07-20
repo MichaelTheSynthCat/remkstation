@@ -67,6 +67,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
                         </div>
                     </div>
                 }
+                followCursor={true}
             >
                 <div
                     className="flex justify-between text-lg transition-all hover:bg-blue-500"
@@ -110,10 +111,8 @@ function CalendarDayEntry({ date, dataRef, handleModify, handleDelete, in_view_m
         return events;
     };
 
-    console.log(date + " " + in_view_month)
-
     return (
-        <div className="relative border-2 w-full min-h-[8rem] rounded-lg text-xl ">
+        <div className="relative border-2 w-full min-h-[8rem] rounded-lg text-xl transition-all hover:border-highlight_darker">
             <div className="absolute bottom-0 right-0 p-1 ">
                 <span className={ in_view_month ? "opacity-95" : "opacity-20"}>{date.getDate()}</span>
             </div>
