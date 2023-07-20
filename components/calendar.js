@@ -46,7 +46,9 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
             <Tooltip
                 title={
                     <div>
-                        <div className="text-xl font-bold border-b">{event.name}</div>
+                        <div className="text-xl font-bold border-b">
+                            {event.name}
+                        </div>
                         <div className="text-base">
                             <span className="text-lg pr-2">
                                 {new Date(event.date)
@@ -54,8 +56,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
                                     .slice(0, 5)}
                             </span>
                             <span className="font-extralight text-gray-300">
-                            {new Date(event.date)
-                                    .toDateString().slice(4)}
+                                {new Date(event.date).toDateString().slice(4)}
                             </span>
                         </div>
                         <div className="border-b text-base">
@@ -90,7 +91,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
     );
 }
 
-function CalendarDayEntry({ date, dataRef, handleModify, handleDelete }) {
+function CalendarDayEntry({ date, dataRef, handleModify, handleDelete, in_view_month }) {
     const renderEvents = () => {
         const events = [];
         var dataCopy = dataRef.slice();
@@ -109,10 +110,12 @@ function CalendarDayEntry({ date, dataRef, handleModify, handleDelete }) {
         return events;
     };
 
+    console.log(date + " " + in_view_month)
+
     return (
         <div className="relative border-2 w-full min-h-[8rem] rounded-lg text-xl ">
-            <div className="absolute bottom-0 right-0 p-1 opacity-20">
-                {date.getUTCDate()}
+            <div className="absolute bottom-0 right-0 p-1 ">
+                <span className={ in_view_month ? "opacity-95" : "opacity-20"}>{date.getDate()}</span>
             </div>
             <div className="items-stretch">{renderEvents()}</div>
         </div>
@@ -123,32 +126,21 @@ function CalendarTable({ view_date, dataRef, handleModify, handleDelete }) {
     const generateCells = (main_date, dataRef) => {
         const cells = [];
         const mondays = getViewedWeeks(main_date);
-        mondays.forEach((monday) => {
+        var day = mondays[0];
+        for (var i = 0; i < 6 * 7; i++) {
             cells.push(
                 <CalendarDayEntry
-                    key={monday.toDateString()}
-                    date={monday}
+                    key={day.toDateString()}
+                    date={day}
                     dataRef={dataRef}
                     handleModify={handleModify}
                     handleDelete={handleDelete}
+                    in_view_month={ view_date.getMonth() === day.getMonth() ? true : false }
                 />
             );
-            var week_days = [monday];
-            for (var i = 1; i < 7; i++) {
-                var next_day = new Date(week_days[i - 1].toString());
-                next_day.setUTCDate(next_day.getUTCDate() + 1);
-                week_days.push(next_day);
-                cells.push(
-                    <CalendarDayEntry
-                        key={week_days[i].toDateString()}
-                        date={week_days[i]}
-                        dataRef={dataRef}
-                        handleModify={handleModify}
-                        handleDelete={handleDelete}
-                    />
-                );
-            }
-        });
+            day = new Date(day.toString());
+            day.setDate(day.getDate() + 1);
+        }
         return cells;
     };
 
@@ -287,7 +279,7 @@ function EventEditDialog({
                     <Button
                         variant="contained"
                         onClick={() => {
-                            if(name.length != 0 ) {
+                            if (name.length != 0) {
                                 handleSaveChanges(name, description, date);
                                 resetDialog();
                             }
