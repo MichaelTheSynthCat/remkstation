@@ -122,6 +122,7 @@ function CalendarDayEntry({ date, dataRef, handleModify, handleDelete, in_view_m
 }
 
 function CalendarTable({ view_date, dataRef, handleModify, handleDelete }) {
+    // generates 6 weeks of cells
     const generateCells = (main_date, dataRef) => {
         const cells = [];
         const mondays = getViewedWeeks(main_date);
@@ -163,6 +164,7 @@ function CalendarAddEvent({ handleOpenDialog }) {
 }
 
 function CalendarHeader({ view_date, handleViewChange, handleOpenDialog }) {
+    // returns text containg viewed year and month
     var actual_month = (main_date) => {
         return (
             <span>
@@ -181,10 +183,10 @@ function CalendarHeader({ view_date, handleViewChange, handleOpenDialog }) {
                     variant="contained"
                     onClick={() => handleViewChange(-1)}
                 >
-                    {"<"}
+                    <span className="text-xl">{"<"}</span>
                 </Button>
                 <Button variant="contained" onClick={() => handleViewChange(1)}>
-                    {">"}
+                    <span className="text-xl">{">"}</span>
                 </Button>
                 <CalendarAddEvent handleOpenDialog={handleOpenDialog} />
             </div>
@@ -293,27 +295,28 @@ function EventEditDialog({
 }
 
 export default function Calendar() {
+    // array of all stored events
     const [calendarData, setCalendatData] = useState(loadData());
+    // day determining the month to be displayed
     const [viewDay, setViewDay] = useState(new Date(Date.now()));
+    // tells whether the dialog for creating new events should be opened 
     const [openDialog, setOpenDialog] = useState(false);
-    const [editedEvent, setEditedEvent] = useState({
-        id: "",
-        name: "",
-        date: null,
-    });
 
+    // return calendar data from local storage
     function loadData() {
         var data = JSON.parse(localStorage.getItem("calendar"));
         return data === null ? [] : data;
     }
 
+    // change viewed month
     function changeMonth(increment) {
-        // increment is +1 or -1
+        // increment is +1 (next) or -1 (previous)
         var nextDate = new Date(viewDay.toString());
         nextDate.setUTCMonth(nextDate.getUTCMonth() + increment);
         setViewDay(nextDate);
     }
 
+    // adds a new event
     function addEvent(newEvent) {
         var nextCalendarData = calendarData.slice();
         nextCalendarData.push(newEvent);
@@ -321,6 +324,7 @@ export default function Calendar() {
         localStorage.setItem("calendar", JSON.stringify(nextCalendarData));
     }
 
+    // deletes the event with oldEventID and adds newEvent to database
     function updateEvent(oldEventID, newEvent) {
         var nextCalendarData = calendarData.slice();
         for (var i = 0; i < nextCalendarData.length; i++) {
@@ -332,6 +336,7 @@ export default function Calendar() {
         localStorage.setItem("calendar", JSON.stringify(nextCalendarData));
     }
 
+    // deletes an event with eventID
     function deleteEvent(eventID) {
         var nextCalendarData = calendarData.slice();
         for (var i = 0; i < nextCalendarData.length; i++) {
@@ -352,6 +357,7 @@ export default function Calendar() {
         setOpenDialog(false);
     };
 
+    // function triggered when creating a new event
     const handleSaveChanges = (name, description, date) => {
         var name_str = name;
         var description_str = description;
@@ -367,6 +373,7 @@ export default function Calendar() {
         setOpenDialog(false);
     };
 
+    // function triggered when modifying an existing event
     const handleModify = (oldEventID, name, description, date) => {
         console.log(date);
         var name_str = name;
@@ -395,7 +402,7 @@ export default function Calendar() {
                 handleModify={handleModify}
                 handleDelete={deleteEvent}
             />
-            <EventEditDialog
+            <EventEditDialog // dialog for creating new events
                 openBool={openDialog}
                 handleCloseDialog={handleCloseDialog}
                 handleSaveChanges={handleSaveChanges}
