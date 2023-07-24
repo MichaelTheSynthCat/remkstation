@@ -8,8 +8,12 @@ function ToolLinkButton({ icon, text, link }) {
             className="group grid grid-cols-1 place-items-center justify-center bg-primary rounded-lg p-4 m-4"
             href={link ? link : "/"}
         >
-            <div className="text-6xl transition-all ease-linear group-hover:text-highlight">{icon ? icon : <AiFillTool />}</div>
-            <p className="text-lg transition-all ease-linear group-hover:text-highlight">{text ? text : "tool name"}</p>
+            <div className="text-6xl transition-all ease-linear group-hover:text-highlight">
+                {icon ? icon : <AiFillTool />}
+            </div>
+            <p className="text-lg transition-all ease-linear group-hover:text-highlight">
+                {text ? text : "tool name"}
+            </p>
         </Link>
     );
 }
@@ -37,7 +41,9 @@ export default function Home() {
                     />
                 </div>
             </div>
-            <p className="p-8 text-center text-lg">All user data is stored locally in your browser.</p>
+            <p className="p-8 text-center text-lg">
+                All user data is stored locally in your browser.
+            </p>
         </main>
     );
 }
