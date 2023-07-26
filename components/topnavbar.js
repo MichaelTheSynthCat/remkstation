@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AiFillGithub } from "react-icons/ai";
 
 function NavButton({ children, text, link }) {
     return (
@@ -22,6 +23,10 @@ export default function TopNavBar() {
             <NavButton text="To Do" link="/todo" />
             <NavButton text="Calendar" link="/calendar" />
             <NavButton text="Notes" link="/notes" />
+            <NavButton link="https://github.com/MichaelTheSynthCat/remkstation">
+                <span className="pr-1">About</span>
+                <AiFillGithub className="inline align-top text-3xl"/>
+            </NavButton>
         </div>
     );
 }
