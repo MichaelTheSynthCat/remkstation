@@ -102,7 +102,7 @@ export default function NotesApp() {
         var nextData = data.slice();
         nextData.forEach((note) => {
             if (note.id === id) {
-                note.title;
+                note.title = title;
                 note.text = text;
             }
         });
