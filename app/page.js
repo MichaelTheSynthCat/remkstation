@@ -1,4 +1,5 @@
 import { AiFillCalendar, AiFillTool } from "react-icons/ai";
+import {LiaStickyNote} from "react-icons/lia"
 import { PiListChecks } from "react-icons/pi";
 import Link from "next/link";
 
@@ -38,6 +39,11 @@ export default function Home() {
                         icon={<AiFillCalendar />}
                         text={"Calendar"}
                         link={"/calendar"}
+                    />
+                    <ToolLinkButton
+                        icon={<LiaStickyNote />}
+                        text={"Notes"}
+                        link={"/notes"}
                     />
                 </div>
             </div>

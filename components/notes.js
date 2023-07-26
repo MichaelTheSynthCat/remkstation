@@ -2,41 +2,84 @@
 
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { AiFillDelete } from "react-icons/ai";
 
-function NoteSession({ id, init_text, handleDelete, handleChange }) {
+function NoteSession({
+    id,
+    init_title,
+    init_text,
+    handleDelete,
+    handleChange,
+}) {
     const [text, setText] = useState(init_text);
+    const [title, setTitle] = useState(init_title);
 
     return (
-        <div className="grid grid-cols-1 min-w-[24rem] min-h-[26rem]">
-            <TextField
-                value={text}
-                onChange={(e) => {
-                    setText(e.target.value);
-                    handleChange(id, e.target.value);
-                }}
-                multiline
-                rows={18}
-                sx={{
-                    backgroundColor: "black",
-                    border: "0px",
-                }}
-                inputProps={{
-                    sx: {
-                        color: "white",
-                        fontSize: '18px',
-                    },
-                }}
-            ></TextField>
+        <div className="relative grid grid-cols-1 min-w-[24rem] min-h-[26rem]">
+            <div className="flex border-b">
+                <TextField
+                    className="grow"
+                    value={title}
+                    onChange={(e) => {
+                        setTitle(e.target.value);
+                        handleChange(id, e.target.value, text);
+                    }}
+                    placeholder="title"
+                    sx={{
+                        backgroundColor: "black",
+                        border: "0px",
+                    }}
+                    inputProps={{
+                        sx: {
+                            color: "white",
+                            fontSize: "1.5rem",
+                        },
+                    }}
+                />
+            </div>
+            <div className="flex">
+                <TextField
+                    className="grow"
+                    value={text}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        handleChange(id, title, e.target.value);
+                    }}
+                    placeholder="text"
+                    multiline
+                    rows={18}
+                    sx={{
+                        backgroundColor: "black",
+                        border: "0px",
+                    }}
+                    inputProps={{
+                        sx: {
+                            color: "white",
+                            fontSize: "1.25rem",
+                        },
+                    }}
+                />
+            </div>
+            <AiFillDelete
+                className="absolute right-1 bottom-1 text-3xl ease-linear transition-colors hover:text-red-600"
+                onClick={() => handleDelete(id)}
+            />
         </div>
     );
 }
 
 function AddNoteButton({ handleAdd }) {
-    return <div onClick={handleAdd} className="bg-black text-9xl text-center grid items-center min-w-[25rem] min-h-[24rem]">+</div>;
+    return (
+        <div
+            onClick={handleAdd}
+            className="bg-black text-[10rem] text-center grid items-center min-w-[25rem] min-h-[26rem] ease-linear transition-colors hover:text-highlight"
+        >
+            +
+        </div>
+    );
 }
 
 export default function NotesApp() {
-    //const [data, setData] = useState([{id: "15651891", text: "hallo"}]);
     const [data, setData] = useState(loadData());
 
     function loadData() {
@@ -50,18 +93,31 @@ export default function NotesApp() {
 
     function createNote() {
         var nextData = data.slice();
-        nextData.push({ id: Date.now().toString(), text: "" });
+        nextData.push({ id: Date.now().toString(), title: "", text: "" });
         setData(nextData);
         saveData(nextData);
     }
 
-    function changeNote(id, text) {
+    function changeNote(id, title, text) {
         var nextData = data.slice();
         nextData.forEach((note) => {
             if (note.id === id) {
+                note.title;
                 note.text = text;
             }
         });
+        setData(nextData);
+        saveData(nextData);
+    }
+
+    function deleteNote(id) {
+        var nextData = data.slice();
+        for (var i = 0; i < nextData.length; i++) {
+            if (nextData[i].id === id) {
+                nextData.splice(i, 1);
+                break;
+            }
+        }
         setData(nextData);
         saveData(nextData);
     }
@@ -73,8 +129,10 @@ export default function NotesApp() {
                 <NoteSession
                     key={note.id}
                     id={note.id}
+                    init_title={note.title}
                     init_text={note.text}
                     handleChange={changeNote}
+                    handleDelete={deleteNote}
                 />
             );
         });
@@ -84,5 +142,9 @@ export default function NotesApp() {
         return noteblocks;
     };
 
-    return <div className="flex flex-wrap justify-center space-x-4 space-y-4">{renderNotes()}</div>;
+    return (
+        <div className="flex flex-wrap justify-center space-x-4 space-y-4">
+            {renderNotes()}
+        </div>
+    );
 }
