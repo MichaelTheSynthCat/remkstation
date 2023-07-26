@@ -296,7 +296,7 @@ function EventEditDialog({
 
 export default function Calendar() {
     // array of all stored events
-    const [calendarData, setCalendatData] = useState(loadData());
+    const [calendarData, setCalendatData] = useState(typeof window !== "undefined" ? loadData() : []);
     // day determining the month to be displayed
     const [viewDay, setViewDay] = useState(new Date(Date.now()));
     // tells whether the dialog for creating new events should be opened 

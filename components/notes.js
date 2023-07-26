@@ -80,7 +80,7 @@ function AddNoteButton({ handleAdd }) {
 }
 
 export default function NotesApp() {
-    const [data, setData] = useState(loadData());
+    const [data, setData] = useState(typeof window !== "undefined" ? loadData() : []);
 
     function loadData() {
         var data = JSON.parse(localStorage.getItem("notes"));
