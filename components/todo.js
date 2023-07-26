@@ -34,12 +34,15 @@ function TDEntry({ text, checked, handleCheck, handleRemove }) {
 
 export default function ToDoList() {
     const [entries, setEntries] = useState(
-        typeof window !== "undefined"
-            ? JSON.parse(localStorage.getItem("todolist"))
-            : []
+        typeof window !== "undefined" ? loadData() : []
     );
     const [entryField, setEntryField] = useState("");
     const rows = [];
+
+    function loadData() {
+        var data = JSON.parse(localStorage.getItem("todolist"));
+        return data === null ? [] : data;
+    }
 
     function addEntry() {
         if (entryField === "") return;
