@@ -42,7 +42,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
     };
 
     return (
-        <>
+        <div>
             <Tooltip
                 title={
                     <div>
@@ -88,7 +88,7 @@ function CalendarEventEntry({ event, handleModify, handleDelete }) {
                     setOpenDialog(false);
                 }}
             />
-        </>
+        </div>
     );
 }
 
